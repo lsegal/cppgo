@@ -43,7 +43,7 @@ type Library struct {
 func main() {
   // STEP 2. get an address for the C++ object
   // NOTE: you may need to free this later depending on call semantics.
-  o, _, _ := create.Call()
+  o, _, _ := create.Call() // o is a uintptr
 
   // STEP 3. point our proxy structure at the functions located in the object
   // that we got from step 2.
@@ -119,13 +119,13 @@ type MyClass struct {
 func main() {
   var m1 MyClass
   var m2 MyClass
-  o1 := get_object_address()
-  o2 := get_object_address()
+  o1 := get_object_address() // uintptr
+  o2 := get_object_address() // uintptr
 
   cpp.ConvertRef(o, &m1)
   cpp.ConvertRef(o, &m2)
 
-  // we may have m2 here, but we call DoWork()
+  // we may have m2 here, but we call DoWork() with the uintptr address.
   m1.DoWork(o2)
 }
 ```
