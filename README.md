@@ -73,11 +73,14 @@ You can define arbitrary function arguments and return types, but the internal
 translation does not support a full range of types. Currently, only the
 following types are supported:
 
-* `uint*`, `int*`, `string`, `[]byte`, `uintptr`
+* `uint*`, `int*`, `string`, `uintptr`
 
 Any other type of pointer will be passed as a pointer directly, which may be
 what you want, but may not be. For any type that isn't well converted by
-the library, use `uintptr` to send its address. 
+the library, use `uintptr` to send its address.
+
+Note that slices are not well supported due to the extra information
+encoded in a Go slice.
 
 ### Passing Objects as Arguments
 
