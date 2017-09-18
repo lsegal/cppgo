@@ -93,6 +93,9 @@ the library, use `uintptr` to send its address.
 Note that slices are not well supported due to the extra information
 encoded in a Go slice.
 
+Note also that `string` converts only to and from the `char*` C type, in other
+words, C strings. The `std::cstring` or `wchar_t` types are not yet supported.
+
 ### Passing Objects as Arguments
 
 When passing C++ objects to methods, you will want to use the `cpp.Ptr` or
