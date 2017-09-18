@@ -18,6 +18,7 @@ package main
 
 var (
   dll = syscall.MustLoadLibrary("mylib.dll")
+  // this may be "new_object@0" if your C++ compiler decides to mangle names.
   create = dll.MustFindProc("new_object")
 )
 
