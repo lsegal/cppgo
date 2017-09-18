@@ -7,6 +7,16 @@ Go runtime without requiring cgo compilation.
 support in the Go stdlib on Linux/Mac. It is possible to support other platforms,
 but the work has not been done.
 
+To set up a Go object that proxies method calls to a C++ object:
+
+1. Define a Go struct type with function pointer field declarations that match
+   the C++ class declaration,
+2. Get the address of the C++ object in memory as a `uintptr` type,
+3. Call `cpp.ConvertRef(addr, &o)` to point this proxy struct object (`o`) at
+   the C++ object by its `addr`.
+4. After this initial setup, the function pointers on the struct object will be
+   ready to use like any Go method.
+
 ## Example Usage
 
 The following example will call into a C++ class `Library` with a
