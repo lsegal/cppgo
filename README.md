@@ -59,14 +59,22 @@ The C++ class for the above program could look something like:
 ```cpp
 #include <stdio.h>
 
+#ifdef WIN32
+#  define CALLC __stdcall
+#  define DLLEXPORT __declspec(dllexport)
+#else
+#  define CALLC
+#  define DLLEXPORT
+#endif
+
 class Library {
 public:
-  virtual char __stdcall *GetString(char *name) {
+  virtual char CALLC *GetString(char *name) {
     return sprintf("Hello, %s!", name);
   }
 }
 
-extern "C" __declspec(dllexport) Library* __stdcall new_object() {
+extern "C" DLLEXPORT Library* CALLC new_object() {
   return new Library();
 }
 ```
