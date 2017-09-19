@@ -61,20 +61,42 @@ The C++ class for the above program could look something like:
 
 #ifndef WIN32
 #  define __stdcall
+#  define __cdecl
 #  define __declspec(x)
 #endif
 
 class Library {
 public:
-  virtual char __stdcall *GetString(char *name) {
+  virtual char __cdecl *GetString(char *name) {
     return sprintf("Hello, %s!", name);
   }
 }
 
-extern "C" __declspec(dllexport) Library* CALLC new_object() {
+extern "C" __declspec(dllexport) Library* __stdcall new_object() {
   return new Library();
 }
 ```
+
+## Using `__stdcall` Calling Convention on Windows
+
+By default, this library expects that methods will use the `__cdecl` calling
+convention, which is the default for C/C++ POSIX compilers (Windows uses
+`__thiscall` which is not supported, see below for caveats). If you want to
+opt into the `stdcall` calling convention, you can do so with a `call:"std"`
+tag on the field declaration:
+
+```go
+type Library struct {
+  GetID() int `call:"std"` // "stdcall" is also valid here
+}
+```
+
+This will ensure that the function pointer is compatible with the library's
+calling convention.
+
+**Note**: The `__thiscall` calling convention (default convention for C++
+method functions) is unsupported in this library. See the caveats section
+for more information.
 
 ## Caveats & Gotchas
 
