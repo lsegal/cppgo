@@ -59,22 +59,19 @@ The C++ class for the above program could look something like:
 ```cpp
 #include <stdio.h>
 
-#ifdef WIN32
-#  define CALLC __stdcall
-#  define DLLEXPORT __declspec(dllexport)
-#else
-#  define CALLC
-#  define DLLEXPORT
+#ifndef WIN32
+#  define __stdcall
+#  define __declspec(x)
 #endif
 
 class Library {
 public:
-  virtual char CALLC *GetString(char *name) {
+  virtual char __stdcall *GetString(char *name) {
     return sprintf("Hello, %s!", name);
   }
 }
 
-extern "C" DLLEXPORT Library* CALLC new_object() {
+extern "C" __declspec(dllexport) Library* CALLC new_object() {
   return new Library();
 }
 ```
@@ -138,10 +135,13 @@ func main() {
 This library does not yet support non-virtual functions. Only functions
 defined with the `virtual` keyword are callable.
 
-### Methods Must Be `__stdcall` on Windows
+### No `__thiscall` Support on Windows
 
-Due to the way this library performs function calls, the class must use
-the `stdcall` calling convention on Windows.
+By default, Windows compilers use `__thiscall` calling conventions for
+C++ methods. This calling convention is, unfortunately, incompatible with
+Go's syscall support, and is not supported. Note that `__cdecl` (the default
+C/C++ calling convention) _is_ supported on Windows, and you can happily
+annotate your functions with that call convention.
 
 ## Author & License
 

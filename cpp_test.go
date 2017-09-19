@@ -18,6 +18,7 @@ type lib struct {
 	GetString  func() string
 	GetSelf    func() *lib
 	TestValues func(string, int, uintptr) bool
+	Add        func(n, m int) int `call:"std"`
 }
 
 func compile() {
@@ -54,4 +55,5 @@ func TestCpp(t *testing.T) {
 		assert.Equal(t, 42, l.GetSelf().GetInt())
 	}
 	assert.Equal(t, true, l.TestValues("hello world", -1, o))
+	assert.Equal(t, 13, l.Add(11, 2))
 }

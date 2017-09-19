@@ -4,11 +4,17 @@ import "C"
 import (
 	"errors"
 	"reflect"
+	"strings"
 	"unsafe"
 )
 
 var (
 	errMustBeStruct = errors.New("value must be a reference to struct")
+)
+
+const (
+	callCdecl = iota
+	callStdcall
 )
 
 func (p Ptr) convert(obj interface{}) error {
@@ -27,12 +33,19 @@ func (p Ptr) convert(obj interface{}) error {
 
 	for idx := 0; idx < e.NumField(); idx++ {
 		i := idx
-		ft := e.Field(i).Type
+		f := e.Field(i)
+		ft := f.Type
 		if ft.Kind() != reflect.Func {
 			continue
 		}
 		if ft.NumOut() > 1 {
 			return errors.New(e.Field(i).Name + ": more than 1 return value is unsupported")
+		}
+
+		var calltype int
+
+		if c := f.Tag.Get("call"); strings.HasPrefix(c, "std") {
+			calltype = callStdcall
 		}
 
 		vfn := reflect.MakeFunc(ft, func(args []reflect.Value) []reflect.Value {
@@ -44,7 +57,14 @@ func (p Ptr) convert(obj interface{}) error {
 				ins[n+1], o = toptr(arg)
 				gchold[n] = o
 			}
-			out, _ := p.call(i, ins...)
+
+			var out uintptr
+			switch calltype {
+			case callStdcall:
+				out, _ = p.stdcall(i, ins...)
+			default:
+				out, _ = p.call(i, ins...)
+			}
 
 			if ft.NumOut() == 0 {
 				return []reflect.Value{}

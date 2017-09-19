@@ -5,7 +5,7 @@ import (
 	"syscall"
 )
 
-func (p Ptr) call(offset int, a ...uintptr) (uintptr, error) {
+func (p Ptr) stdcall(offset int, a ...uintptr) (uintptr, error) {
 	addr := p.getaddr(offset)
 	switch l := len(a); l {
 	case 0:

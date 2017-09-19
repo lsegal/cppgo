@@ -1,38 +1,39 @@
 #include <string.h>
 
-#ifdef WIN32
-#define CALLFMT __stdcall
-#define DLLEXPORT __declspec(dllexport)
-#else
-#define CALLFMT
-#define DLLEXPORT
+#ifndef WIN32
+#  define __cdecl
+#  define __stdcall
+#  define __declspec(dllexport)
 #endif
 
 class Library
 {
 public:
   Library() {}
-  virtual int CALLFMT return_int() {
+  virtual int __cdecl  return_int() {
     return 42;
   }
-  virtual bool CALLFMT return_bool(bool in) {
+  virtual bool __cdecl  return_bool(bool in) {
     return !in;
   }
-  virtual void CALLFMT flip_bool(bool *in) {
+  virtual void __cdecl flip_bool(bool *in) {
     *in = !*in;
   }
-  virtual const char CALLFMT *return_string() {
+  virtual const char __cdecl  *return_string() {
     return "hello world";
   }
-  virtual Library CALLFMT *self() {
+  virtual Library __cdecl  *self() {
     return this;
   }
-  virtual bool CALLFMT accept_string_int_and_object(char *str, unsigned int val, Library *other) {
+  virtual bool __cdecl  accept_string_int_and_object(char *str, unsigned int val, Library *other) {
     return strcmp(str, "hello world") == 0 && val == (unsigned int)-1 &&
            this == other && other->return_int() == this->return_int();
   }
+  virtual int __stdcall stdcall_add(int n, int m) {
+    return n+m;
+  }
 };
 
-extern "C" DLLEXPORT Library* CALLFMT get_object() {
+extern "C" __declspec(dllexport) Library* __stdcall get_object() {
   return new Library();
 }
