@@ -3,10 +3,6 @@
 This library allows methods on C++ objects to be called directly from the
 Go runtime without requiring cgo compilation.
 
-**NOTE**: This library currently only works on Windows due to lack of `dlopen()`
-support in the Go stdlib on Linux/Mac. It is possible to support other platforms,
-but the work has not been done.
-
 To set up a Go object that proxies method calls to a C++ object:
 
 1. Define a Go struct type with function pointer field declarations that match
@@ -28,8 +24,7 @@ package main
 
 var (
   dll = syscall.MustLoadLibrary("mylib.dll")
-  // this may be "new_object@0" if your C++ compiler decides to mangle names.
-  create = dll.MustFindProc("new_object")
+  create = dll.MustFindProc("new_object@0") // @0 due to stdcall mangling
 )
 
 // STEP 1. define our C++ proxy struct type with function pointers.
@@ -135,10 +130,10 @@ func main() {
 This library does not yet support non-virtual functions. Only functions
 defined with the `virtual` keyword are callable.
 
-### Mac/Linux are Unsupported
+### Methods Must Be `__stdcall` on Windows
 
-As mentioned above, Mac and Linux platforms are not yet supported due to
-different library loading mechanics.
+Due to the way this library performs function calls, the class must use
+the `stdcall` calling convention on Windows.
 
 ## Author & License
 
