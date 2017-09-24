@@ -8,17 +8,17 @@ import (
 	"github.com/lsegal/cppgo/asmcall/cdecl"
 )
 
-func (p Ptr) stdcall(offset int, a ...uintptr) (uintptr, error) {
+func (p ptr) stdcall(offset int, a ...uintptr) (uintptr, error) {
 	// ignore stdcalls on non-Windows platform
 	return p.cdeclcall(offset, a...)
 }
 
-func (p Ptr) thiscall(offset int, a ...uintptr) (uintptr, error) {
+func (p ptr) thiscall(offset int, a ...uintptr) (uintptr, error) {
 	// ignore thiscalls on non-Windows platform
 	return p.cdeclcall(offset, a...)
 }
 
-func (p Ptr) cdeclcall(offset int, a ...uintptr) (uintptr, error) {
+func (p ptr) cdeclcall(offset int, a ...uintptr) (uintptr, error) {
 	addr := p.getaddr(offset)
 	switch l := len(a); l {
 	case 0:

@@ -1,3 +1,8 @@
+// Package cdecl implements method call ABI for the POSIX C/C++ calling
+// convention.
+//
+// Note that this package does not rely on cgo to implement calling, so a
+// compiler is not needed to call into C functions using this library.
 package cdecl
 
 import "errors"

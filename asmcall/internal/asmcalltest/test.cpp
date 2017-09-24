@@ -16,9 +16,8 @@ private:
 };
 
 #pragma GCC diagnostic ignored "-Wpmf-conversions"
-static Test *t;
 extern "C" {
-	void *thiscall_obj() { t = new Test(); }
+	void *thiscall_obj() { return new Test(); }
 	void *thiscall_addr_f0() { return (void *)&Test::f0; }
 	void *thiscall_addr_f1() { return (void *)&Test::f1; }
 	void *thiscall_addr_f2() { return (void *)&Test::f2; }

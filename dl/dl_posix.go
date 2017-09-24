@@ -19,7 +19,7 @@ var (
 	RTLD_LOCAL  = int(C.RTLD_LOCAL)
 )
 
-func Open(filename string, flags ...int) *Library {
+func open(filename string, flags ...int) *Library {
 	cfilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cfilename))
 	flag := 0
@@ -32,16 +32,16 @@ func Open(filename string, flags ...int) *Library {
 	return &Library{p: C.dlopen(cfilename, C.int(flag))}
 }
 
-func (l Library) Load(procname string) *Func {
+func (l Library) load(procname string) *Func {
 	cprocname := C.CString(procname)
 	defer C.free(unsafe.Pointer(cprocname))
 	return &Func{p: uintptr(C.dlsym(l.p, cprocname))}
 }
 
-func (l Library) Close() {
+func (l Library) close() {
 	C.dlclose(l.p)
 }
 
-func (f Func) Stdcall(a ...uintptr) (uintptr, error) {
+func (f Func) stdcall(a ...uintptr) (uintptr, error) {
 	return cdecl.Call(f.p, a...)
 }
