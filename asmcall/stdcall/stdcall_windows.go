@@ -1,5 +1,3 @@
-// Package stdcall implements method call ABI for the __stdcall calling
-// convention.
 package stdcall
 
 import "errors"
