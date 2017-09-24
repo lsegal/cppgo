@@ -1,12 +1,12 @@
 // +build !windows
 
-TEXT ·Call0(SB),4,$0-16
+TEXT ·call0(SB),4,$0-16
   MOVQ addr+0(FP), AX
   CALL AX
   MOVQ AX, ret+8(FP)
   RET
 
-TEXT ·Call1(SB),4,$0-24
+TEXT ·call1(SB),4,$0-24
   MOVQ a+8(FP), DI
 
   MOVQ addr+0(FP), AX
@@ -14,7 +14,7 @@ TEXT ·Call1(SB),4,$0-24
   MOVQ AX, ret+16(FP)
   RET
 
-TEXT ·Call2(SB),4,$0-32
+TEXT ·call2(SB),4,$0-32
   MOVQ a+8(FP), DI
   MOVQ b+16(FP), SI
 
@@ -23,7 +23,7 @@ TEXT ·Call2(SB),4,$0-32
   MOVQ AX, ret+24(FP)
   RET
 
-TEXT ·Call3(SB),4,$0-40
+TEXT ·call3(SB),4,$0-40
   MOVQ a+8(FP), DI
   MOVQ b+16(FP), SI
   MOVQ c+24(FP), DX
@@ -33,7 +33,7 @@ TEXT ·Call3(SB),4,$0-40
   MOVQ AX, ret+32(FP)
   RET
 
-TEXT ·Call4(SB),4,$0-48
+TEXT ·call4(SB),4,$0-48
   MOVQ a+8(FP), DI
   MOVQ b+16(FP), SI
   MOVQ c+24(FP), DX
@@ -44,7 +44,7 @@ TEXT ·Call4(SB),4,$0-48
   MOVQ AX, ret+40(FP)
   RET
 
-TEXT ·Call5(SB),4,$0-56
+TEXT ·call5(SB),4,$0-56
   MOVQ a+8(FP), DI
   MOVQ b+16(FP), SI
   MOVQ c+24(FP), DX
@@ -56,7 +56,7 @@ TEXT ·Call5(SB),4,$0-56
   MOVQ AX, ret+48(FP)
   RET
 
-TEXT ·Call6(SB),4,$0-64
+TEXT ·call6(SB),4,$0-64
   MOVQ a+8(FP), DI
   MOVQ b+16(FP), SI
   MOVQ c+24(FP), DX

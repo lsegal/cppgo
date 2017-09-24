@@ -1,4 +1,4 @@
-TEXT ·Call0(SB),4,$0-12
+TEXT ·call0(SB),4,$0-12
   MOVL a+4(FP), CX
 
   MOVL addr+0(FP), AX
@@ -6,7 +6,7 @@ TEXT ·Call0(SB),4,$0-12
   MOVL AX, ret+8(FP)
   RET
 
-TEXT ·Call1(SB),4,$4-16
+TEXT ·call1(SB),4,$4-16
   MOVL a+4(FP), CX
   MOVL b+8(FP), BX
   MOVL BX, 0(SP)
@@ -17,7 +17,7 @@ TEXT ·Call1(SB),4,$4-16
   MOVL AX, ret+12(FP)
   RET
 
-TEXT ·Call2(SB),4,$8-20
+TEXT ·call2(SB),4,$8-20
   MOVL a+4(FP), CX
   MOVL b+8(FP), BX
   MOVL BX, 0(SP)
@@ -30,7 +30,7 @@ TEXT ·Call2(SB),4,$8-20
   MOVL AX, ret+16(FP)
   RET
 
-TEXT ·Call3(SB),4,$12-24
+TEXT ·call3(SB),4,$12-24
   MOVL a+4(FP), CX
   MOVL b+8(FP), BX
   MOVL BX, 0(SP)
@@ -45,7 +45,7 @@ TEXT ·Call3(SB),4,$12-24
   MOVL AX, ret+20(FP)
   RET
 
-TEXT ·Call4(SB),4,$16-28
+TEXT ·call4(SB),4,$16-28
   MOVL a+4(FP), CX
   MOVL b+8(FP), BX
   MOVL BX, 0(SP)
@@ -62,7 +62,7 @@ TEXT ·Call4(SB),4,$16-28
   MOVL AX, ret+24(FP)
   RET
 
-TEXT ·Call5(SB),4,$20-32
+TEXT ·call5(SB),4,$20-32
   MOVL a+4(FP), CX
   MOVL b+8(FP), BX
   MOVL BX, 0(SP)
