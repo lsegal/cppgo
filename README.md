@@ -27,8 +27,8 @@ for usage guides:
 package main
 
 var (
-  dll = dl.Open("mylib.dll")
-  create = dll.Load("new_object")
+  lib = dl.Open("mylib.dll")
+  create = lib.Load("new_object")
 )
 
 // STEP 1. define our C++ proxy struct type with function pointers.
@@ -54,7 +54,7 @@ func main() {
   fmt.Println(l.GetString("Loren"))
 
   // Clean up library
-  dll.Close()
+  lib.Close()
 }
 
 // Prints:
