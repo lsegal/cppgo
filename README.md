@@ -48,6 +48,9 @@ func main() {
 
   // STEP 4. call the function with arguments
   fmt.Println(l.GetString("Loren"))
+
+  // Clean up library
+  dll.Close()
 }
 
 // Prints:
