@@ -12,8 +12,8 @@ import (
 )
 
 type lib struct {
-	GetInt     func() int
-	GetBool    func(b bool) bool
+	GetInt     func() int        `call:"cdecl"`
+	GetBool    func(b bool) bool `call:"this"`
 	FlipBool   func(b *bool)
 	GetString  func() string
 	GetSelf    func() *lib

@@ -4,6 +4,7 @@ import "C"
 import (
 	"errors"
 	"reflect"
+	"runtime"
 	"strings"
 	"unsafe"
 )
@@ -15,6 +16,7 @@ var (
 const (
 	callCdecl = iota
 	callStdcall
+	callThiscall
 )
 
 func (p Ptr) convert(obj interface{}) error {
@@ -42,10 +44,14 @@ func (p Ptr) convert(obj interface{}) error {
 			return errors.New(e.Field(i).Name + ": more than 1 return value is unsupported")
 		}
 
-		var calltype int
-
-		if c := f.Tag.Get("call"); strings.HasPrefix(c, "std") {
-			calltype = callStdcall
+		// check for call convention (only affects Windows)
+		calltype := callCdecl
+		if runtime.GOOS == "windows" {
+			if c := f.Tag.Get("call"); strings.HasPrefix(c, "std") {
+				calltype = callStdcall
+			} else if c == "" {
+				calltype = callThiscall
+			}
 		}
 
 		vfn := reflect.MakeFunc(ft, func(args []reflect.Value) []reflect.Value {
@@ -62,8 +68,10 @@ func (p Ptr) convert(obj interface{}) error {
 			switch calltype {
 			case callStdcall:
 				out, _ = p.stdcall(i, ins...)
+			case callThiscall:
+				out, _ = p.thiscall(i, ins...)
 			default:
-				out, _ = p.call(i, ins...)
+				out, _ = p.cdeclcall(i, ins...)
 			}
 
 			if ft.NumOut() == 0 {

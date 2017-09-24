@@ -6,7 +6,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/lsegal/cppgo/internal/fcall"
+	"github.com/lsegal/cppgo/internal/asmcall/cdecl"
 )
 
 var (
@@ -29,7 +29,7 @@ func FuncAt(addr uintptr) *Func {
 }
 
 func (f Func) Call(a ...uintptr) (uintptr, error) {
-	return fcall.CallCdecl(f.p, a...)
+	return cdecl.Call(f.p, a...)
 }
 
 func Open(filename string, flags int) *Library {

@@ -2,6 +2,7 @@ package cpp_test
 
 import (
 	"os/exec"
+	"runtime"
 	"syscall"
 )
 
@@ -14,7 +15,11 @@ var (
 
 func load() {
 	dll = syscall.MustLoadDLL(`fixtures\dll.dll`)
-	get_object = dll.MustFindProc("get_object@0")
+	procname := "get_object"
+	if runtime.GOARCH == "386" {
+		procname += "@0"
+	}
+	get_object = dll.MustFindProc(procname)
 }
 
 func shutdown() {
