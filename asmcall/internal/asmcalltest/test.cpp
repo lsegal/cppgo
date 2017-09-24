@@ -15,13 +15,33 @@ private:
 	int _f5(int a, int b, int c, int d, int e) { return e; }
 };
 
+typedef int (Test::*tf0)();
+typedef int (Test::*tf1)(int);
+typedef int (Test::*tf2)(int, int);
+typedef int (Test::*tf3)(int, int, int);
+typedef int (Test::*tf4)(int, int, int, int);
+typedef int (Test::*tf5)(int, int, int, int, int);
+
+extern "C"
+{
+
+void *thiscall_obj() { return new Test(); }
+	
+#ifdef WIN32
 #pragma GCC diagnostic ignored "-Wpmf-conversions"
-extern "C" {
-	void *thiscall_obj() { return new Test(); }
-	void *thiscall_addr_f0() { return (void *)&Test::f0; }
-	void *thiscall_addr_f1() { return (void *)&Test::f1; }
-	void *thiscall_addr_f2() { return (void *)&Test::f2; }
-	void *thiscall_addr_f3() { return (void *)&Test::f3; }
-	void *thiscall_addr_f4() { return (void *)&Test::f4; }
-	void *thiscall_addr_f5() { return (void *)&Test::f5; }
+void *thiscall_addr_f0() { return (void *)&Test::f0; }
+void *thiscall_addr_f1() { return (void *)&Test::f1; }
+void *thiscall_addr_f2() { return (void *)&Test::f2; }
+void *thiscall_addr_f3() { return (void *)&Test::f3; }
+void *thiscall_addr_f4() { return (void *)&Test::f4; }
+void *thiscall_addr_f5() { return (void *)&Test::f5; }
+#else /* !WIN32 */
+tf0 thiscall_addr_f0() { return &Test::f0; }
+tf1 thiscall_addr_f1() { return &Test::f1; }
+tf2 thiscall_addr_f2() { return &Test::f2; }
+tf3 thiscall_addr_f3() { return &Test::f3; }
+tf4 thiscall_addr_f4() { return &Test::f4; }
+tf5 thiscall_addr_f5() { return &Test::f5; }
+#endif /* WIN32 */
+
 }
