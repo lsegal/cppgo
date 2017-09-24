@@ -49,6 +49,8 @@ func (p Ptr) convert(obj interface{}) error {
 		if runtime.GOOS == "windows" {
 			if c := f.Tag.Get("call"); strings.HasPrefix(c, "std") {
 				calltype = callStdcall
+			} else if strings.HasPrefix(c, "cdecl") {
+				calltype = callCdecl
 			} else if c == "" {
 				calltype = callThiscall
 			}

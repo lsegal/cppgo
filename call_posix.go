@@ -5,7 +5,7 @@ package cpp
 import (
 	"errors"
 
-	"github.com/lsegal/cppgo/internal/asmcall/cdecl"
+	"github.com/lsegal/cppgo/asmcall/cdecl"
 )
 
 func (p Ptr) stdcall(offset int, a ...uintptr) (uintptr, error) {

@@ -2,29 +2,9 @@
 
 package cpp_test
 
-import (
-	"os/exec"
-
-	"github.com/lsegal/cppgo/internal/dl"
-)
+import "os/exec"
 
 var (
 	compileCmd = exec.Command("sh", "build.sh")
-
-	dll        *dl.Library
-	get_object *dl.Func
+	libname    = `fixtures/dll.so`
 )
-
-func load() {
-	dll = dl.Open("fixtures/dll.so", dl.RTLD_NOW)
-	get_object = dll.Sym("get_object")
-}
-
-func shutdown() {
-	dll.Close()
-}
-
-func objptr() uintptr {
-	o, _ := get_object.Call()
-	return o
-}

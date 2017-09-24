@@ -1,32 +1,15 @@
 package cpp_test
 
-import (
-	"os/exec"
-	"runtime"
-	"syscall"
-)
+import "os/exec"
+import "runtime"
 
 var (
 	compileCmd = exec.Command("cmd", "/c", "build.bat")
-
-	dll        *syscall.DLL
-	get_object *syscall.Proc
+	libname    = `fixtures\dll.dll`
 )
 
-func load() {
-	dll = syscall.MustLoadDLL(`fixtures\dll.dll`)
-	procname := "get_object"
+func init() {
 	if runtime.GOARCH == "386" {
 		procname += "@0"
 	}
-	get_object = dll.MustFindProc(procname)
-}
-
-func shutdown() {
-	dll.Release()
-}
-
-func objptr() uintptr {
-	o, _, _ := get_object.Call()
-	return o
 }

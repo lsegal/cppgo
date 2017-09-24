@@ -8,7 +8,14 @@ import (
 	"testing"
 
 	cpp "github.com/lsegal/cppgo"
+	"github.com/lsegal/cppgo/dl"
 	"github.com/stretchr/testify/assert"
+)
+
+var (
+	dll        *dl.Library
+	get_object *dl.Func
+	procname   = "get_object"
 )
 
 type lib struct {
@@ -28,6 +35,20 @@ func compile() {
 	if err != nil {
 		panic(fmt.Sprintf("ERROR: %v\n----\n%s\n----\n", err, string(b)))
 	}
+}
+
+func load() {
+	dll = dl.Open(libname, dl.RTLD_NOW)
+	get_object = dll.Load(procname)
+}
+
+func shutdown() {
+	dll.Close()
+}
+
+func objptr() uintptr {
+	o, _ := get_object.Call()
+	return o
 }
 
 func TestMain(m *testing.M) {

@@ -23,8 +23,8 @@ for usage guides:
 package main
 
 var (
-  dll = syscall.MustLoadLibrary("mylib.dll")
-  create = dll.MustFindProc("new_object@0") // @0 due to stdcall mangling
+  dll = dl.Open("mylib.dll")
+  create = dll.Load("new_object")
 )
 
 // STEP 1. define our C++ proxy struct type with function pointers.
@@ -38,7 +38,7 @@ type Library struct {
 func main() {
   // STEP 2. get an address for the C++ object
   // NOTE: you may need to free this later depending on call semantics.
-  o, _, _ := create.Call() // o is a uintptr
+  o, _ := create.Call() // o is a uintptr
 
   // STEP 3. point our proxy structure at the functions located in the object
   // that we got from step 2.
@@ -60,43 +60,63 @@ The C++ class for the above program could look something like:
 #include <stdio.h>
 
 #ifndef WIN32
-#  define __stdcall
-#  define __cdecl
 #  define __declspec(x)
 #endif
 
 class Library {
 public:
-  virtual char __cdecl *GetString(char *name) {
+  virtual char *GetString(char *name) {
     return sprintf("Hello, %s!", name);
   }
 }
 
-extern "C" __declspec(dllexport) Library* __stdcall new_object() {
+extern "C" __declspec(dllexport) Library* new_object() {
   return new Library();
 }
 ```
 
-## Using `__stdcall` Calling Convention on Windows
+## Getting a C++ Object Pointer
 
-By default, this library expects that methods will use the `__cdecl` calling
-convention, which is the default for C/C++ POSIX compilers (Windows uses
-`__thiscall` which is not supported, see below for caveats). If you want to
-opt into the `stdcall` calling convention, you can do so with a `call:"std"`
-tag on the field declaration:
+In some cases you may also need to figure out how to get access to the C++
+object you want to call into. Although you may already have the object pointer
+in memory, sometimes this object will come from a library call. This library
+also abstracts the loading of dynamic libraries through the `dl` package:
+
+```go
+dll := dl.Open("path/to/library")
+fn := dll.Load("get_object")
+result, err := fn.Call()
+
+// result now olds a uintptr to your object
+
+// call this when you are done with the C++ object.
+// this may not be at the end of the load function.
+dll.Close()
+```
+
+See documentation for `dl` for more information on advanced usage.
+
+## Using `__stdcall` & `__cdecl` Calling Convention on Windows
+
+By default, this library will use the "default" calling convention for
+C++ methods on that platform. For POSIX systems, this is `__cdecl`, but on
+Windows, the default calling convention is `__thiscall`. 
+
+In short, if you are using the default calling convention for your C++ methods,
+you do not have to do anything differently from the above example. However,
+if you encounter methods tagged with `__stdcall` or `__cdecl`, you can
+support these conventions by adding a `call:"std"` or `call:"cdecl"`
+tag on the field declaration respectively:
 
 ```go
 type Library struct {
-  GetID() int `call:"std"` // "stdcall" is also valid here
+  GetID()   int    `call:"std"`   // "stdcall" is also valid here
+  GetName() string `call:"cdecl"`
 }
 ```
 
 This will ensure that the function pointer is compatible with the library's
 calling convention.
-
-**Note**: The `__thiscall` calling convention (default convention for C++
-method functions) is unsupported in this library. See the caveats section
-for more information.
 
 ## Caveats & Gotchas
 
@@ -110,7 +130,8 @@ following types are supported:
 
 Any other type of pointer will be passed as a pointer directly, which may be
 what you want, but may not be. For any type that isn't well converted by
-the library, use `uintptr` to send its address.
+the library, use `uintptr` to send its address. Note also that floating points
+are explicitly unsupported.
 
 Note that slices are not well supported due to the extra information
 encoded in a Go slice.
@@ -156,14 +177,6 @@ func main() {
 
 This library does not yet support non-virtual functions. Only functions
 defined with the `virtual` keyword are callable.
-
-### No `__thiscall` Support on Windows
-
-By default, Windows compilers use `__thiscall` calling conventions for
-C++ methods. This calling convention is, unfortunately, incompatible with
-Go's syscall support, and is not supported. Note that `__cdecl` (the default
-C/C++ calling convention) _is_ supported on Windows, and you can happily
-annotate your functions with that call convention.
 
 ## Author & License
 
