@@ -2,3 +2,7 @@ language: go
 
 go:
   - 1.8.x
+
+os:
+  - linux
+  - osx
