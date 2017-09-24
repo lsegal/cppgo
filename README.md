@@ -1,6 +1,8 @@
 # cppgo
 
-[![Build Status](https://travis-ci.org/lsegal/cppgo.svg?branch=master)](https://travis-ci.org/lsegal/cppgo)
+[![Build Status](https://img.shields.io/travis/lsegal/cppgo.svg)](https://travis-ci.org/lsegal/cppgo)
+[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/lsegal/cppgo)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lsegal/cppgo/blob/master/LICENSE.txt)
 
 This library allows methods on C++ objects to be called directly from the
 Go runtime without requiring cgo compilation.
