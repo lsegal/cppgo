@@ -9,7 +9,7 @@ func call3(addr uintptr, a uintptr, b uintptr, c uintptr, d uintptr) uintptr
 func call4(addr uintptr, a uintptr, b uintptr, c uintptr, d uintptr, e uintptr) uintptr
 func call5(addr uintptr, a uintptr, b uintptr, c uintptr, d uintptr, e uintptr, f uintptr) uintptr
 
-func Call(addr uintptr, a ...uintptr) (uintptr, error) {
+func call(addr uintptr, a ...uintptr) (uintptr, error) {
 	switch l := len(a); l {
 	case 0:
 		return 0, errors.New("must pass this arg")
