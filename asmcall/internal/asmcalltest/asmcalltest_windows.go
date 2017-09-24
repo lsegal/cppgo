@@ -18,20 +18,15 @@ static void *stdcall_addr_f4() { return (void *)f4; }
 static void *stdcall_addr_f5() { return (void *)f5; }
 static void *stdcall_addr_f6() { return (void *)f6; }
 
-extern void init();
+extern void *thiscall_obj();
 extern void *thiscall_addr_f0();
 extern void *thiscall_addr_f1();
 extern void *thiscall_addr_f2();
 extern void *thiscall_addr_f3();
 extern void *thiscall_addr_f4();
 extern void *thiscall_addr_f5();
-extern void *thiscall_addr_f6();
 */
 import "C"
-
-func init() {
-	C.init()
-}
 
 func GetStdcallF0Addr() uintptr {
 	return uintptr(C.stdcall_addr_f0())
@@ -59,6 +54,10 @@ func GetStdcallF5Addr() uintptr {
 
 func GetStdcallF6Addr() uintptr {
 	return uintptr(C.stdcall_addr_f6())
+}
+
+func GetThiscallObj() uintptr {
+	return uintptr(C.thiscall_obj())
 }
 
 func GetThiscallF0Addr() uintptr {
