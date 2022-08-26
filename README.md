@@ -51,7 +51,7 @@ func main() {
   }
 
   // STEP 4. call the function with arguments
-  fmt.Println(l.GetString("Loren"))
+  fmt.Println(lib.GetString("Loren"))
 
   // Clean up library
   lib.Close()
