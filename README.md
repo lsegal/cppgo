@@ -46,7 +46,7 @@ func main() {
 
   // STEP 3. point our proxy structure at the functions located in the object
   // that we got from step 2.
-  if err := cpp.ConvertRef(o, &l); err != nil {
+  if err := cpp.ConvertRef(o, &lib); err != nil {
     panic(err)
   }
 
