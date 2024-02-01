@@ -26,9 +26,16 @@ for usage guides:
 ```go
 package main
 
+import (
+	"fmt"
+
+	cpp "github.com/lsegal/cppgo"
+	"github.com/lsegal/cppgo/dl"
+)
+
 var (
-  lib = dl.Open("mylib.dll")
-  create = lib.Load("new_object")
+	dll    = dl.Open("mylib.dll")
+	create = dll.Load("new_object")
 )
 
 // STEP 1. define our C++ proxy struct type with function pointers.
@@ -36,46 +43,47 @@ var (
 // function, at which point this struct will proxy all method calls to the
 // C++ object.
 type Library struct {
-  GetString(name string) string
+	GetString func(name string) string
 }
 
 func main() {
-  // STEP 2. get an address for the C++ object
-  // NOTE: you may need to free this later depending on call semantics.
-  o, _ := create.Call() // o is a uintptr
+	// STEP 2. get an address for the C++ object
+	// NOTE: you may need to free this later depending on call semantics.
+	o, _ := create.Call() // o is a uintptr
 
-  // STEP 3. point our proxy structure at the functions located in the object
-  // that we got from step 2.
-  if err := cpp.ConvertRef(o, &lib); err != nil {
-    panic(err)
-  }
+	// STEP 3. point our proxy structure at the functions located in the object
+	// that we got from step 2.
+	var lib Library
+	if err := cpp.ConvertRef(o, &lib); err != nil {
+		panic(err)
+	}
 
-  // STEP 4. call the function with arguments
-  fmt.Println(lib.GetString("Loren"))
+	// STEP 4. call the function with arguments
+	fmt.Println(lib.GetString("Loren"))
 
-  // Clean up library
-  lib.Close()
+	// Clean up library
+	dll.Close()
 }
-
-// Prints:
-// Hello, Loren!
 ```
 
 The C++ class for the above program could look something like:
 
 ```cpp
-#include <stdio.h>
+#include <string>
 
 #ifndef WIN32
 #  define __declspec(x)
 #endif
 
 class Library {
+  std::string str_;
+
 public:
-  virtual char *GetString(char *name) {
-    return sprintf("Hello, %s!", name);
+  virtual const char *GetString(char *name) {
+    str_ = "Hello, " + std::string(name) + "!";
+    return str_.c_str();
   }
-}
+};
 
 extern "C" __declspec(dllexport) Library* new_object() {
   return new Library();
